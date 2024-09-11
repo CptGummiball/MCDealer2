@@ -21,7 +21,7 @@ public class DatabaseManager {
         if (!dataFolder.exists()) {
             dataFolder.mkdirs();
         }
-        databaseFile = new File(dataFolder, "shops.db");
+        databaseFile = new File(dataFolder, "web/shops.db");
 
         if (!databaseFile.exists()) {
             try {

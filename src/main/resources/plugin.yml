@@ -3,3 +3,11 @@ version: '1.0'
 main: org.cptgummiball.mcdealer2.MCDealer2
 api-version: '1.21'
 authors: [ cptgummiball ]
+commands:
+  mcdealer2reload:
+    description: Reloads the MCDealer2 plugin.
+    permission: mcdealer2.admin
+permissions:
+  mcdealer2.admin:
+    description: Allows admin control over MCDealer2
+    default: op

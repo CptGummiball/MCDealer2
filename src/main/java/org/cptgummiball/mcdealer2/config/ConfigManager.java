@@ -18,6 +18,6 @@ public class ConfigManager {
     }
 
     public long getSyncInterval() {
-        return config.getLong("sync-interval", 600);
+        return config.getLong("general.sync-interval", 600);
     }
 }
