@@ -12,6 +12,5 @@ Since we had some problems with the old version, we decided to rework the whole 
 - Internal Webserver without external Files
 - Itemsadder/Oraxen Support
 - Datapack/Resourcepack Support
-- Support for the most popular shop plugins
 - Better config.yml with more options
 - More filters on the frontend
