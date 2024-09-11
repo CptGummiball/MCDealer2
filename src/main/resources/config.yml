@@ -1,0 +1,26 @@
+# MCDealer 2 Config
+
+# General Settings
+general:
+  language: en # en/de (Internal Language for Chat and Console)
+  use-commands: true # if you don't need these you can deactivate them here
+  sync-interval: 600 # Time in ticks (600 ticks = 30 seconds)
+
+# Settings for Webserver and Shop Overview
+webserver:
+  port: 8090 # Make shure this is an opened port
+
+front-end:
+  language: en # en/de
+  enable-bestprice: true # If you don't need the best price feature you can deactivate it here
+  enable-container: true # If you deactivate this, Bags and Shulkers will be shown as Empty
+  admin-shops-allways-top: false # If you activate it, admin shops will allways be shown at the top of the page
+  no-empty-shops: true # If you deactivate it, empty shops will be displayed
+
+# Database settings (comming soon)
+database:
+  type: flat # More Types will comming soon
+
+# Don't change anything below!
+config-version: 1
+
