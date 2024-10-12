@@ -7,3 +7,16 @@ webserver:
   startfail: "Error starting web server:"
   stopped: "Web server was stopped successfully."
   stopfail: "Error stopping web server:"
+commands:
+  nopermission: "No Permission to use this command"
+  onlyplayers: "Only players can use this command"
+reloadcommand:
+  success: "Successfully reloaded the plugin"
+shopcommands:
+  loadhiddenshopsfail: "Failed to load hidden shops: "
+  savehiddenshopsfail: "Failed to save hidden shops: "
+  createhiddenshopsfail: "Failed to create hiddenshops.yml: "
+  added: "Shop is now hidden in the Shop Overview"
+  removed: "Shop is now shown in the Shop Overview"
+  hidehopsuccess: "Click on a VillagerMarket shop to hide it in the Shop Overview"
+  showshopsuccess: "Click on a VillagerMarket shop to show it in the Shop Overview"

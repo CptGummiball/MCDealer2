@@ -18,6 +18,8 @@ public class MCDealer2 extends JavaPlugin {
         saveDefaultConfig();
         ConfigUpdater configUpdater = new ConfigUpdater(this);
         configUpdater.updateConfig();
+        // Copy Resources
+        saveResource("hiddenshops.yml", false);
         // Initialize and start processes
         getLogger().info(translator.translate("plugin.startprocess"));
         // Start the web server

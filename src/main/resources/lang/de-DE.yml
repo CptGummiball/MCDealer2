@@ -1,9 +1,22 @@
 plugin:
   enablemessage: "MCDealer 2 gestartet!"
   disablemessage: "MCDealer 2 beendet!"
-  startprocess: "Aktiviere features..."
+  startprocess: "Aktiviere Features..."
 webserver:
   startport: "Webserver gestartet auf Port: "
   startfail: "Fehler beim Starten des Webservers: "
   stopped: "Webserver wurde erfolgreich gestoppt."
   stopfail: "Fehler beim Stoppen des Webservers: "
+commands:
+  nopermission: "No Permission to use this command"
+  onlyplayers: "Only players can use this command"
+reloadcommand:
+  success: "Successfully reloaded the plugin"
+shopcommands:
+  loadhiddenshopsfail: "Verborgene Shops konnten nicht geladen werden: "
+  savehiddenshopsfail: "Fehler beim speichern der verborgenen Shops: "
+  createhiddenshopsfail: "Fehler beim erstellen der hiddenshops.yml: "
+  added: "Der Shop ist jetzt in der Shop-Übersicht ausgeblendet"
+  removed: "Der Shop wird nun in der Shop-Übersicht angezeigt"
+  hidehopsuccess: "Klicke auf einen VillagerMarket-Shop, um ihn in der Shop-Übersicht auszublenden"
+  showshopsuccess: "Klicke auf einen VillagerMarket-Shop, um ihn in der Shop-Übersicht anzuzeigen"

@@ -38,6 +38,18 @@ config-version: 1
 The API is always active, regardless of whether the internal website is used. It provides shop data at the following endpoint:
 
 - Endpoint: `/api/shopdata`
+
+## Commands
+
+The MCDealer2 plugin provides the following commands for managing shops and settings:
+
+- **/mcdealer [subcommand]**: Manage your shops and settings.
+
+    - **Subcommands**:
+        - **reload**: Reloads the plugin configuration. (Requires permission: `mcdealer.admin`)
+        - **hideshop**: Hides your shop in the Shop Overview. (Requires permission: `mcdealer.hideshop`)
+        - **showshop**: Shows your previously hidden shop in the Shop Overview. (Requires permission: `mcdealer.showshop`)
+
 ## Work in Progress
 This plugin is still under development. The release date has not been set. Features will continue to be added, optimized, and tested. Feedback and suggestions for improvement are always welcome!
 ## Support, Issues, and Ideas

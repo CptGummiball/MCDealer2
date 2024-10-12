@@ -4,10 +4,16 @@ main: org.cptgummiball.mcdealer2.MCDealer2
 api-version: '1.21'
 authors: [ cptgummiball ]
 commands:
-  mcdealer2reload:
-    description: Reloads the MCDealer2 plugin.
-    permission: mcdealer2.admin
+  mcdealer:
+    description: Manage your shops and reload the plugin
+    usage: /mcdealer [reload|hideshop|showshop]
 permissions:
-  mcdealer2.admin:
-    description: Allows admin control over MCDealer2
+  mcdealer.hideshop:
+    description: Allows hiding your shops with /mcdealer hideshop.
+    default: true
+  mcdealer.showshop:
+    description: Allows showing your shops with /mcdealer showshop.
+    default: true
+  mcdealer.admin:
+    description: Allows executing admin commands such as /mcdealer reload.
     default: op
