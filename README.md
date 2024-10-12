@@ -62,7 +62,7 @@ For questions, issues, or ideas for new features, please feel free to open a new
 
 ## Mentions
 
-First of all the one and only @Bestem0r and his Plugin [VillagerMarket](https://github.com/Bestem0r/VillagerMarket)
+First of all the one and only [@Bestem0r](https://github.com/Bestem0r) and his Plugin [VillagerMarket](https://github.com/Bestem0r/VillagerMarket)
 
 And special thank you to the following individuals for their contributions and support:
 
