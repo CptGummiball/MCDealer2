@@ -1,0 +1,9 @@
+plugin:
+  enablemessage: "MCDealer 2 gestartet!"
+  disablemessage: "MCDealer 2 beendet!"
+  startprocess: "Aktiviere features..."
+webserver:
+  startport: "Webserver gestartet auf Port: "
+  startfail: "Fehler beim Starten des Webservers: "
+  stopped: "Webserver wurde erfolgreich gestoppt."
+  stopfail: "Fehler beim Stoppen des Webservers: "
