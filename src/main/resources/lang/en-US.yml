@@ -20,3 +20,6 @@ shopcommands:
   removed: "Shop is now shown in the Shop Overview"
   hidehopsuccess: "Click on a VillagerMarket shop to hide it in the Shop Overview"
   showshopsuccess: "Click on a VillagerMarket shop to show it in the Shop Overview"
+configupdater:
+  update: "Updated config.yml to Version: "
+  updatefail: "Failed to update config.yml: "

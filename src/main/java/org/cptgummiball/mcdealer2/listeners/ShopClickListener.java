@@ -109,6 +109,7 @@ public class ShopClickListener implements Listener {
     }
 
     // Load hidden shops when starting the plugin
+    @SuppressWarnings("ResultOfMethodCallIgnored")
     private void loadHiddenShops() {
         File file = new File(plugin.getDataFolder(), "hiddenshops.yml");
         if (!file.exists()) {

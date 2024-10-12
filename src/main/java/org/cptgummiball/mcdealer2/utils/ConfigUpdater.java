@@ -2,18 +2,22 @@ package org.cptgummiball.mcdealer2.utils;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.cptgummiball.mcdealer2.MCDealer2;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Objects;
 
 public class ConfigUpdater {
 
     private final JavaPlugin plugin;
     private final String currentVersion = "1"; // Set your plugin version here
+    private final Translator translator;
 
-    public ConfigUpdater(JavaPlugin plugin) {
+    public ConfigUpdater(MCDealer2 plugin) {
         this.plugin = plugin;
+        this.translator = plugin.translator;
     }
 
     public void updateConfig() {
@@ -27,7 +31,7 @@ public class ConfigUpdater {
         if (configVersion.equals("0") || configVersion.compareTo(currentVersion) < 0) {
             // Load default config from the resources folder
             YamlConfiguration newConfig = YamlConfiguration.loadConfiguration(
-                    new InputStreamReader(plugin.getResource("config.yml"))
+                    new InputStreamReader(Objects.requireNonNull(plugin.getResource("config.yml")))
             );
 
             // Copy old configuration values to the new config
@@ -43,10 +47,9 @@ public class ConfigUpdater {
             // Save the updated config
             try {
                 newConfig.save(configFile);
-                plugin.getLogger().info("Config updated to version " + currentVersion);
+                plugin.getLogger().info(translator.translate("configupdater.update") + currentVersion);
             } catch (IOException e) {
-                plugin.getLogger().severe("Failed to save updated config!");
-                e.printStackTrace();
+                plugin.getLogger().severe(translator.translate("configupdater.updatefail") + e.getMessage());
             }
         }
     }

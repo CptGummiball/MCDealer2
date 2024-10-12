@@ -1,6 +1,5 @@
 package org.cptgummiball.mcdealer2.commands;
 
-import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -13,7 +12,6 @@ import java.util.List;
 
 public class MCDealerCommand implements CommandExecutor {
 
-    private final MCDealer2 plugin;
     private final Translator translator;
 
     // Temporary lists to hold player names
@@ -21,10 +19,10 @@ public class MCDealerCommand implements CommandExecutor {
     private static final List<String> showshopPlayerList = new ArrayList<>();
 
     public MCDealerCommand(MCDealer2 plugin) {
-        this.plugin = plugin;
         this.translator = plugin.translator;
     }
 
+    @SuppressWarnings("NullableProblems")
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
         if (args.length == 0) {
@@ -44,8 +42,7 @@ public class MCDealerCommand implements CommandExecutor {
                 break;
 
             case "hideshop":
-                if (sender instanceof Player) {
-                    Player player = (Player) sender;
+                if (sender instanceof Player player) {
                     if (player.hasPermission("mcdealer.shop")) {
                         hideshopPlayerList.add(player.getName());
                         player.sendMessage(translator.translate("shopcommands.hideshopsuccess")); // Add success message
@@ -58,8 +55,7 @@ public class MCDealerCommand implements CommandExecutor {
                 break;
 
             case "showshop":
-                if (sender instanceof Player) {
-                    Player player = (Player) sender;
+                if (sender instanceof Player player) {
                     if (player.hasPermission("mcdealer.shop")) {
                         showshopPlayerList.add(player.getName());
                         player.sendMessage(translator.translate("shopcommand.showshopsuccess")); // Add success message

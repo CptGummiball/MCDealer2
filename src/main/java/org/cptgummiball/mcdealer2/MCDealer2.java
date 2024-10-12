@@ -1,5 +1,8 @@
 package org.cptgummiball.mcdealer2;
 
+import org.bukkit.Bukkit;
+import org.cptgummiball.mcdealer2.commands.MCDealerCommand;
+import org.cptgummiball.mcdealer2.listeners.ShopClickListener;
 import org.cptgummiball.mcdealer2.utils.ConfigUpdater;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.cptgummiball.mcdealer2.utils.Translator;
@@ -14,7 +17,7 @@ public class MCDealer2 extends JavaPlugin {
     @Override
     public void onEnable() {
 
-        // Update or Load the Config
+        // Update and-or Load the Config
         saveDefaultConfig();
         ConfigUpdater configUpdater = new ConfigUpdater(this);
         configUpdater.updateConfig();
@@ -26,7 +29,9 @@ public class MCDealer2 extends JavaPlugin {
         webServer = new WebServer(this);
         webServer.start();
         // Register commands
-
+        this.getCommand("mcdealer").setExecutor(new MCDealerCommand(this));
+        // Register Listeners
+        Bukkit.getPluginManager().registerEvents(new ShopClickListener(this), this);
         // Starting Message
         getLogger().info(translator.translate("plugin.enablemessage"));
     }
