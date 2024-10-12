@@ -52,6 +52,7 @@ The MCDealer2 plugin provides the following commands for managing shops and sett
 
 ## Work in Progress
 This plugin is still under development. The release date has not been set. Features will continue to be added, optimized, and tested. Feedback and suggestions for improvement are always welcome!
+Currently, we are ONLY working with the Spigot 1.21 API, which means that the plugin will only function with Spigot or Paper versions 1.21 and above upon release. Compatibility with older versions will be added gradually thereafter.
 ## Support, Issues, and Ideas
 For questions, issues, or ideas for new features, please feel free to open a new issue on the GitHub page. Your feedback is valuable for improving the plugin!
 ## Authors
