@@ -67,5 +67,7 @@ First of all the one and only [@Bestem0r](https://github.com/Bestem0r) and his P
 
 And special thank you to the following individuals for their contributions and support:
 
+- Lalloween - for providing his shop data
+
 ## LICENSE
 This plugin is released under the MIT License. See the [LICENSE](LICENSE) file for details.
