@@ -52,7 +52,6 @@ The MCDealer2 plugin provides the following commands for managing shops and sett
 
 ## Work in Progress
 This plugin is still under development. The release date has not been set. Features will continue to be added, optimized, and tested. Feedback and suggestions for improvement are always welcome!
-Currently, we are ONLY working with the Spigot 1.21 API, which means that the plugin will only function with Spigot or Paper versions 1.21 and above upon release. Compatibility with older versions will be added gradually thereafter.
 ## Support, Issues, and Ideas
 For questions, issues, or ideas for new features, please feel free to open a new issue on the GitHub page. Your feedback is valuable for improving the plugin!
 ## Authors
@@ -63,11 +62,9 @@ For questions, issues, or ideas for new features, please feel free to open a new
 
 ## Mentions
 
-First of all the one and only [@Bestem0r](https://github.com/Bestem0r) and his Plugin [VillagerMarket](https://github.com/Bestem0r/VillagerMarket)
+First of all the one and only @Bestem0r and his Plugin [VillagerMarket](https://github.com/Bestem0r/VillagerMarket)
 
 And special thank you to the following individuals for their contributions and support:
-
-- Lalloween - for providing his shop data
 
 ## LICENSE
 This plugin is released under the MIT License. See the [LICENSE](LICENSE) file for details.

@@ -14,6 +14,7 @@ public class MCDealer2 extends JavaPlugin {
     public Translator translator = new Translator(this, language);
     private WebServer webServer;
 
+    @SuppressWarnings("DataFlowIssue")
     @Override
     public void onEnable() {
 

@@ -2,7 +2,7 @@ name: MCDealer2
 version: '1.0'
 main: org.cptgummiball.mcdealer2.MCDealer2
 api-version: '1.21'
-authors: [ cptgummiball ]
+authors: [ cptgummiball, wolf128058 ]
 commands:
   mcdealer:
     description: Manage your shops and reload the plugin
