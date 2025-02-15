@@ -3,7 +3,7 @@ plugin:
   disablemessage: "MCDealer 2 disabled!"
   startprocess: "Enabling features..."
 webserver:
-  startport: "Webserver startet on port: "
+  startport: "Webserver started on port: "
   startfail: "Error starting web server:"
   stopped: "Web server was stopped successfully."
   stopfail: "Error stopping web server:"

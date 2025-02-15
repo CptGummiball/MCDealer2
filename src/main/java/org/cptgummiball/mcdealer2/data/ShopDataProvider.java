@@ -16,7 +16,7 @@ public class ShopDataProvider {
     }
 
     // generate output
-    private static void generateOutputJson() {
+    static void generateOutputJson() {
         try {
             File ShopFolder = new File("plugins/villagermarket/shops");
 
@@ -131,6 +131,7 @@ public class ShopDataProvider {
                     Map<String, Object> item = (Map<String, Object>) itemData.get("item");
 
                     Map<String, Object> processedItem = new HashMap<>();
+                    processedItem.put("itemuuid", createUUID((String) item.get("type"), shopId ));
                     processedItem.put("type", item.get("type"));
                     processedItem.put("meta", item.getOrDefault("meta", new HashMap<>()));
                     processedItem.put("amount", itemData.get("amount"));
@@ -236,26 +237,27 @@ public class ShopDataProvider {
     }
 
     // generate UUID
-    private static void createUUID(Map<String, Object> data, String key) {
+    private static String createUUID(String item, String shopid) {
         try {
-            Bukkit.getLogger().severe("Creating UUID for " + data.get("hopperName"));
-            if (!data.containsKey(key)) {
-                // Erstelle eine neue UUID, da sie nicht in der YAML-Datei vorhanden ist
-                UUID uuid = UUID.randomUUID();
-                data.put(key, uuid.toString());
-            }
+            Bukkit.getLogger().severe("Creating UUID for item " + item + " in Shop " + shopid);
+            return UUID.randomUUID().toString();
         } catch (Exception e) {
-            Bukkit.getLogger().severe("Error while creating UUID" + e.getMessage());
+            Bukkit.getLogger().severe("Error while creating UUID: " + e.getMessage());
+            return null;
         }
     }
 
-    // write to json file
     private static void writeToJsonFile(List<Map<String, Object>> dataList, String outputPath) {
-        try (FileWriter writer = new FileWriter(outputPath)) {
-            Bukkit.getLogger().severe("Writing to JSON file: " + outputPath);
-            ObjectMapper objectMapper = new ObjectMapper();
-            String jsonString = objectMapper.writeValueAsString(dataList);
-            writer.write(jsonString);
+        try {
+            File outputFile = new File(outputPath);
+            outputFile.getParentFile().mkdirs();
+
+            try (FileWriter writer = new FileWriter(outputFile)) {
+                Bukkit.getLogger().severe("Writing to JSON file: " + outputPath);
+                ObjectMapper objectMapper = new ObjectMapper();
+                String jsonString = objectMapper.writeValueAsString(dataList);
+                writer.write(jsonString);
+            }
         } catch (IOException e) {
             Bukkit.getLogger().severe("Error while writing to JSON file: " + e.getMessage());
         }

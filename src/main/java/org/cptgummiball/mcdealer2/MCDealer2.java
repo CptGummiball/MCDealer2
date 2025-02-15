@@ -7,6 +7,8 @@ import org.cptgummiball.mcdealer2.utils.ConfigUpdater;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.cptgummiball.mcdealer2.utils.Translator;
 import org.cptgummiball.mcdealer2.web.WebServer;
+import org.cptgummiball.mcdealer2.data.ShopDataProvider;
+import org.cptgummiball.mcdealer2.data.SchedulerTask;
 
 public class MCDealer2 extends JavaPlugin {
 
@@ -24,6 +26,7 @@ public class MCDealer2 extends JavaPlugin {
         configUpdater.updateConfig();
         // Copy Resources
         saveResource("hiddenshops.yml", false);
+        saveResource("web/data.json", false);
         // Initialize and start processes
         getLogger().info(translator.translate("plugin.startprocess"));
         // Start the web server
@@ -33,6 +36,13 @@ public class MCDealer2 extends JavaPlugin {
         this.getCommand("mcdealer").setExecutor(new MCDealerCommand(this));
         // Register Listeners
         Bukkit.getPluginManager().registerEvents(new ShopClickListener(this), this);
+
+        // Scheduler starten
+        String intervalConfig = getConfig().getString("data.interval", "10m");
+        int intervalSeconds = SchedulerTask.parseInterval(intervalConfig);
+        SchedulerTask schedulerTask = new SchedulerTask(this, intervalSeconds);
+        schedulerTask.start();
+
         // Starting Message
         getLogger().info(translator.translate("plugin.enablemessage"));
     }

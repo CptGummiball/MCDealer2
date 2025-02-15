@@ -12,7 +12,7 @@ import java.util.Objects;
 public class ConfigUpdater {
 
     private final JavaPlugin plugin;
-    private final String currentVersion = "1"; // Set your plugin version here
+    private final String currentVersion = "2"; // Set your plugin version here
     private final Translator translator;
 
     public ConfigUpdater(MCDealer2 plugin) {
@@ -25,7 +25,7 @@ public class ConfigUpdater {
         YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);
 
         // Get the version from the current config file, defaulting to "0" if not found
-        String configVersion = config.getString("version", "0");
+        String configVersion = config.getString("config-version", "0");
 
         // Check if the current config version is outdated
         if (configVersion.equals("0") || configVersion.compareTo(currentVersion) < 0) {
@@ -42,7 +42,7 @@ public class ConfigUpdater {
             }
 
             // Set the new version in the config
-            newConfig.set("version", currentVersion);
+            newConfig.set("config-version", currentVersion);
 
             // Save the updated config
             try {
