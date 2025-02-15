@@ -6,6 +6,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.cptgummiball.mcdealer2.MCDealer2;
 import org.cptgummiball.mcdealer2.utils.Translator;
+import org.cptgummiball.mcdealer2.web.WebServer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,10 +35,27 @@ public class MCDealerCommand implements CommandExecutor {
         switch (subCommand) {
             case "reload":
                 if (sender.hasPermission("mcdealer.admin")) {
-                    // Reload logic can be implemented here
-                    sender.sendMessage(translator.translate("reloadcommand.success")); // You may want to create this message in your translation file
+                    MCDealer2 pluginInstance = MCDealer2.getPlugin(MCDealer2.class);
+
+                    // Reload configuration
+                    pluginInstance.reloadConfig();
+                    sender.sendMessage(translator.translate("reloadcommand.config"));
+
+                    // Reload translations
+                    pluginInstance.translator = new Translator(pluginInstance, pluginInstance.getConfig().getString("language", "en-US"));
+                    sender.sendMessage(translator.translate("reloadcommand.translation"));
+
+                    // Restart WebServer
+                    if (pluginInstance.webServer != null) {
+                        pluginInstance.webServer.stop();
+                    }
+                    pluginInstance.webServer = new WebServer(pluginInstance);
+                    pluginInstance.webServer.start();
+                    sender.sendMessage(translator.translate("reloadcommand.webserver"));
+
+                    sender.sendMessage(translator.translate("reloadcommand.success"));
                 } else {
-                    sender.sendMessage(translator.translate("commands.nopermission")); // Permission error message
+                    sender.sendMessage(translator.translate("commands.nopermission"));
                 }
                 break;
 
@@ -68,17 +86,17 @@ public class MCDealerCommand implements CommandExecutor {
                 break;
 
             default:
-                return false; // Show usage if the subcommand is not recognized
+                return false;
         }
 
-        return true; // Command processed successfully
+        return true;
     }
-
-    // Optionally, you can provide methods to access the temporary lists if needed
+    // Method to get the hideshop player list
     public static List<String> getHideshopPlayerList() {
         return hideshopPlayerList;
     }
 
+    // Method to get the showshop player list
     public static List<String> getShowshopPlayerList() {
         return showshopPlayerList;
     }

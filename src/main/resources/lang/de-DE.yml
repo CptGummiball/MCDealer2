@@ -8,10 +8,13 @@ webserver:
   stopped: "Webserver wurde erfolgreich gestoppt."
   stopfail: "Fehler beim Stoppen des Webservers: "
 commands:
-  nopermission: "No Permission to use this command"
-  onlyplayers: "Only players can use this command"
+  nopermission: "Keine Berechtigung, diesen Befehl zu nutzen"
+  onlyplayers: "Nur Spieler knnen diesen Befehl nutzen"
 reloadcommand:
-  success: "Successfully reloaded the plugin"
+  success: "Erfolgreich neu geladen"
+  config: "Die Konfiguration wurde neu geladen"
+  translation: "Die Übersetzungen wurden neu geladen"
+  webserver: "Der Webserver wurde neu gestartet"
 shopcommands:
   loadhiddenshopsfail: "Verborgene Shops konnten nicht geladen werden: "
   savehiddenshopsfail: "Fehler beim speichern der verborgenen Shops: "

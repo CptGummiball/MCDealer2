@@ -13,7 +13,7 @@ public class MCDealer2 extends JavaPlugin {
 
     String language = getConfig().getString("language","en-US");
     public Translator translator = new Translator(this, language);
-    private WebServer webServer;
+    public WebServer webServer;
 
     @SuppressWarnings("DataFlowIssue")
     @Override

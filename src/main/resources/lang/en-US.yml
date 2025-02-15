@@ -12,6 +12,9 @@ commands:
   onlyplayers: "Only players can use this command"
 reloadcommand:
   success: "Successfully reloaded the plugin"
+  config: "Successfully reloaded the config"
+  translation: "Successfully reloaded the translation"
+  webserver: "Successfully reloaded the webserver"
 shopcommands:
   loadhiddenshopsfail: "Failed to load hidden shops: "
   savehiddenshopsfail: "Failed to save hidden shops: "
