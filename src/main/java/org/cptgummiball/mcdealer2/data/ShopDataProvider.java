@@ -10,23 +10,32 @@ import java.util.*;
 
 public class ShopDataProvider {
 
+    private static final Map<String, Map<String, Object>> bestPriceItems = new HashMap<>();
+
     // Template
     public static void main(String[] args) {
         generateOutputJson();
     }
 
-    // generate output
     static void generateOutputJson() {
         try {
             File ShopFolder = new File("plugins/villagermarket/shops");
 
-            List<Map<String, Object>> result = new ArrayList<>();
+            List<Map<String, Object>> shopsList = new ArrayList<>();
+            processFolder(ShopFolder, shopsList);
 
-            processFolder(ShopFolder, result);
+            // JSON-Struktur mit "shops" und "bestprice"
+            Map<String, Object> jsonData = new HashMap<>();
+            jsonData.put("shops", shopsList);
+            jsonData.put("bestprice", new ArrayList<>(bestPriceItems.values()));
 
-            writeToJsonFile(result, "plugins/mcdealer/web/data.json");
+            // JSON als Liste speichern (da writeToJsonFile eine Liste erwartet)
+            List<Map<String, Object>> finalList = new ArrayList<>();
+            finalList.add(jsonData);
+
+            writeToJsonFile(finalList, "plugins/mcdealer/web/data.json");
         } catch (Exception e) {
-            Bukkit.getLogger().severe("Error while generating data.json" + e.getMessage());
+            Bukkit.getLogger().severe("Error while generating data.json: " + e.getMessage());
         }
     }
 
@@ -144,6 +153,8 @@ public class ShopDataProvider {
                         processedItem.put("stock", "∞");
                     }
 
+                    checkAndUpdateBestPrice(processedItem);
+
                     processedItems.add(processedItem);
                 }
             }
@@ -151,6 +162,27 @@ public class ShopDataProvider {
             data.put("Items", processedItems);
         } catch (Exception e) {
             Bukkit.getLogger().severe("Error while processing data: " + e.getMessage());
+        }
+    }
+
+    private static void checkAndUpdateBestPrice(Map<String, Object> item) {
+        String itemType = (String) item.get("type");
+        Map<String, Object> meta = (Map<String, Object>) item.get("meta");
+        double pricePerItem = (double) item.get("pricePerItem");
+        String itemUUID = (String) item.get("itemuuid");
+
+        // Einzigartiger Key für das Item
+        String itemKey = itemType + meta.toString();
+
+        // Falls dieses Item den besten Preis hat, speichern wir die UUID
+        if (!bestPriceItems.containsKey(itemKey) || pricePerItem < (double) bestPriceItems.get(itemKey).get("pricePerItem")) {
+            Map<String, Object> bestItem = new HashMap<>();
+            bestItem.put("itemuuid", itemUUID);
+            bestItem.put("type", itemType);
+            bestItem.put("meta", meta);
+            bestItem.put("pricePerItem", pricePerItem);
+
+            bestPriceItems.put(itemKey, bestItem);
         }
     }
 
