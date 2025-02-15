@@ -30,23 +30,19 @@ public class ShopDataProvider {
         }
     }
 
-    // Verarbeite den Ordner
     private static void processFolder(File folder, List<Map<String, Object>> result) {
         try {
-            // Lade die 'hiddenshops.yml'-Datei
             File hiddenShopsFile = new File(folder.getParent(), "hiddenshops.yml");  // Hauptordner des Plugins
             Set<String> hiddenShops = loadHiddenShops(hiddenShopsFile); // Set von Dateinamen ohne Erweiterung
 
-            // Filtere alle .yml-Dateien im angegebenen Ordner
             File[] files = folder.listFiles((dir, name) -> name.endsWith(".yml"));
             if (files != null) {
                 for (File file : files) {
                     String fileNameWithoutExtension = getFileNameWithoutExtension(file.getName());
 
-                    // Wenn der Dateiname in der hiddenshops.yml steht, überspringen
                     if (!hiddenShops.contains(fileNameWithoutExtension)) {
                         if (file.isFile()) {
-                            processYaml(file, result); // Verarbeite die Datei
+                            processYaml(file, result);
                         }
                     }
                 }
@@ -56,19 +52,16 @@ public class ShopDataProvider {
         }
     }
 
-    // Lädt die 'hiddenshops.yml' und gibt ein Set der Dateinamen zurück
     private static Set<String> loadHiddenShops(File hiddenShopsFile) throws IOException {
         Set<String> hiddenShops = new HashSet<>();
         if (hiddenShopsFile.exists()) {
             YamlConfiguration config = YamlConfiguration.loadConfiguration(hiddenShopsFile);
-            // Angenommen, die YAML-Datei hat eine Liste von Shop-Namen unter dem Schlüssel 'hiddenShops'
             List<String> shopsList = config.getStringList("hiddenShops");
             hiddenShops.addAll(shopsList);
         }
         return hiddenShops;
     }
 
-    // Hilfsmethode, um den Dateinamen ohne Erweiterung zu extrahieren
     private static String getFileNameWithoutExtension(String fileName) {
         int lastDotIndex = fileName.lastIndexOf('.');
         return (lastDotIndex == -1) ? fileName : fileName.substring(0, lastDotIndex);
@@ -102,7 +95,7 @@ public class ShopDataProvider {
     // process the YAML data
     private static void cleanAndProcessData(Map<String, Object> data, String shopId) {
         try {
-            // Shop-Daten extrahieren
+            // Get Shop Data
             String shopType = (String) data.get("type");
             String shopName = cleanString(getNestedString(data, "entity", "name"));
             String shopProfession = getNestedString(data, "entity", "profession");
@@ -112,7 +105,7 @@ public class ShopDataProvider {
             double z = getNestedDouble(data, "location", "z");
             String owner = shopType.equals("ADMIN") ? "ADMIN" : (String) data.get("ownerName");
 
-            // Shop-Objekt aufbereiten
+            // Shop
             data.put("shopId", shopId);
             data.put("shopType", shopType);
             data.put("shopName", shopName);
@@ -120,7 +113,7 @@ public class ShopDataProvider {
             data.put("shopLocation", world + ", " + x + ", " + y + ", " + z);
             data.put("owner", owner);
 
-            // Items verarbeiten
+            // Items
             List<Map<String, Object>> processedItems = new ArrayList<>();
             Map<String, Object> itemsForSale = (Map<String, Object>) data.get("items_for_sale");
             List<Map<String, Object>> storage = (List<Map<String, Object>>) data.get("storage");
@@ -145,7 +138,6 @@ public class ShopDataProvider {
                     processedItem.put("discount.amount", getDouble(itemData, "discount", "amount"));
                     processedItem.put("mode", itemData.get("mode"));
 
-                    // Lagerbestand setzen, falls der Shop kein Admin-Shop ist
                     if (!shopType.equals("ADMIN")) {
                         processedItem.put("stock", getStockAmount(storage, item));
                     } else {
@@ -162,7 +154,6 @@ public class ShopDataProvider {
         }
     }
 
-    // Hilfsfunktionen zum sicheren Extrahieren von Daten
     private static String getNestedString(Map<String, Object> data, String key1, String key2) {
         Map<String, Object> nested = (Map<String, Object>) data.get(key1);
         return nested != null ? (String) nested.getOrDefault(key2, "") : "";
@@ -203,14 +194,12 @@ public class ShopDataProvider {
                 Objects.equals(item1.get("meta"), item2.get("meta"));
     }
 
-    // clean String und gib den bereinigten Wert zurück
     private static String cleanString(String value) {
         try {
-            // Entferne Farbcodes (das "§" gefolgt von einem beliebigen Zeichen)
-            return value.replaceAll("§.", ""); // Entfernt Farbcodes
+            return value.replaceAll("§.", "");
         } catch (Exception e) {
             Bukkit.getLogger().severe("Error while cleaning string: " + e.getMessage());
-            return value; // Gib den Originalwert zurück, falls ein Fehler auftritt
+            return value;
         }
     }
 

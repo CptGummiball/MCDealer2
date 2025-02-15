@@ -20,6 +20,8 @@ public class Translator {
 
     @SuppressWarnings("unchecked")
     private void loadTranslations(JavaPlugin plugin) {
+        boolean debugMode = plugin.getConfig().getBoolean("debug-mode", false);
+
         File file = new File(plugin.getDataFolder(), "lang/" + langFileName + ".yml");
         if (!file.exists()) {
             plugin.getLogger().warning("Could not find the translation file: " + file.getPath());
@@ -35,12 +37,12 @@ public class Translator {
                 return;
             }
 
-            // Rekursiv flache Map erzeugen
             flattenMap("", data, translations);
 
-            // Ausgabe der geladenen Übersetzungen
-            for (Map.Entry<String, String> entry : translations.entrySet()) {
-                plugin.getLogger().info("Loaded translation: " + entry.getKey() + " -> " + entry.getValue());
+            if (debugMode) {
+                for (Map.Entry<String, String> entry : translations.entrySet()) {
+                    plugin.getLogger().info("Loaded translation: " + entry.getKey() + " -> " + entry.getValue());
+                }
             }
         } catch (IOException e) {
             plugin.getLogger().severe("Error loading translations: " + e.getMessage());

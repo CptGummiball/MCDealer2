@@ -7,7 +7,6 @@ import org.cptgummiball.mcdealer2.utils.ConfigUpdater;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.cptgummiball.mcdealer2.utils.Translator;
 import org.cptgummiball.mcdealer2.web.WebServer;
-import org.cptgummiball.mcdealer2.data.ShopDataProvider;
 import org.cptgummiball.mcdealer2.data.SchedulerTask;
 
 public class MCDealer2 extends JavaPlugin {

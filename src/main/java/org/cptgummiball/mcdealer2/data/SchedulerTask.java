@@ -6,7 +6,7 @@ import org.cptgummiball.mcdealer2.MCDealer2;
 public class SchedulerTask {
 
     private final MCDealer2 plugin;
-    private final int interval; // Intervall in Sekunden
+    private final int interval;
 
     public SchedulerTask(MCDealer2 plugin, int interval) {
         this.plugin = plugin;
@@ -14,17 +14,14 @@ public class SchedulerTask {
     }
 
     public void start() {
-        // Scheduler für wiederholte Ausführung
         new BukkitRunnable() {
             @Override
             public void run() {
-                // ShopDataProvider main-Methode aufrufen
                 ShopDataProvider.generateOutputJson();
             }
-        }.runTaskTimer(plugin, 0, interval * 20L); // 20L entspricht 1 Tick (1/20 Sekunde)
+        }.runTaskTimer(plugin, 0, interval * 20L);
     }
 
-    // Hilfsmethode, um die Zeitangabe (z.B. "1m", "30s") in Sekunden zu konvertieren
     public static int parseInterval(String intervalString) {
         int interval = 0;
         char unit = intervalString.charAt(intervalString.length() - 1);
@@ -32,13 +29,13 @@ public class SchedulerTask {
         try {
             int value = Integer.parseInt(intervalString.substring(0, intervalString.length() - 1));
             switch (unit) {
-                case 's': // Sekunden
+                case 's':
                     interval = value;
                     break;
-                case 'm': // Minuten
+                case 'm':
                     interval = value * 60;
                     break;
-                case 'h': // Stunden
+                case 'h':
                     interval = value * 3600;
                     break;
                 default:
