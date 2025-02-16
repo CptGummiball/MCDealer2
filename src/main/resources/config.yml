@@ -5,7 +5,7 @@ data:
 web:
   port: 8089
   use-internal-website: true
-debug-mode: false
+debug-mode: true
 # Don't change anything below!
-config-version: 2
+config-version: 3
 

@@ -2,6 +2,11 @@ package org.cptgummiball.mcdealer2.data;
 
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ArmorMeta;
+import org.bukkit.inventory.meta.ItemMeta;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.cptgummiball.mcdealer2.MCDealer2;
 import org.yaml.snakeyaml.Yaml;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -11,6 +16,8 @@ import java.util.*;
 public class ShopDataProvider {
 
     private static final Map<String, Map<String, Object>> bestPriceItems = new HashMap<>();
+    private static final JavaPlugin plugin = MCDealer2.getPlugin(MCDealer2.class);
+    private static final boolean debugMode = plugin.getConfig().getBoolean("debug-mode", false);
 
     public static void main(String[] args) {
         generateOutputJson();
@@ -18,7 +25,7 @@ public class ShopDataProvider {
 
     static void generateOutputJson() {
         try {
-            File ShopFolder = new File("plugins/VillagerMarket/shops");
+            File ShopFolder = new File("plugins/VillagerMarket/Shops");
 
             List<Map<String, Object>> shopsList = new ArrayList<>();
             processFolder(ShopFolder, shopsList);
@@ -32,16 +39,18 @@ public class ShopDataProvider {
             List<Map<String, Object>> finalList = new ArrayList<>();
             finalList.add(jsonData);
 
-            writeToJsonFile(finalList, "plugins/mcdealer/web/data.json");
+            writeToJsonFile(finalList, "plugins/MCDealer2/web/data.json");
         } catch (Exception e) {
-            Bukkit.getLogger().severe("Error while generating data.json: " + e.getMessage());
+            if (debugMode) {
+                plugin.getLogger().info("Error while generating output JSON: " + e.getMessage());
+            }
         }
     }
 
     private static void processFolder(File folder, List<Map<String, Object>> result) {
         try {
-            File hiddenShopsFile = new File(folder.getParent(), "hiddenshops.yml");  // Hauptordner des Plugins
-            Set<String> hiddenShops = loadHiddenShops(hiddenShopsFile); // Set von Dateinamen ohne Erweiterung
+            File hiddenShopsFile = new File(folder.getParent(), "hiddenshops.yml");
+            Set<String> hiddenShops = loadHiddenShops(hiddenShopsFile);
 
             File[] files = folder.listFiles((dir, name) -> name.endsWith(".yml"));
             if (files != null) {
@@ -56,7 +65,9 @@ public class ShopDataProvider {
                 }
             }
         } catch (Exception e) {
-            Bukkit.getLogger().severe("Error while processing villagermarket shop folder: " + e.getMessage());
+            if (debugMode) {
+                plugin.getLogger().info("Error while processing villagermarket shop folder: " + e.getMessage());
+            }
         }
     }
 
@@ -65,18 +76,18 @@ public class ShopDataProvider {
     private static void processYaml(File file, List<Map<String, Object>> result) {
         try {
             Yaml yaml = new Yaml();
-            Map<String, Object> yamlData = yaml.load(FileReader(file));
+            Map<String, Object> yamlData = yaml.load(new FileReader(file));
 
-            // Extract shop UUID from the filename (remove .yaml extension)
-            String shopId = file.getName().replace(".yaml", "");
+            String shopId = file.getName().replace(".yml", "");
 
-            // Process the YAML data
+            Map<String, Object> cleanedData = new HashMap<>();
             cleanAndProcessData(yamlData, shopId);
 
-            // Add the processed data to the result
-            result.add(yamlData);
+            result.add(cleanedData);
         } catch (Exception e) {
-            Bukkit.getLogger().severe("Error while processing yaml file" + e.getMessage());
+            if (debugMode) {
+                plugin.getLogger().info("Fehler beim Verarbeiten von " + file.getName() + ": " + e.getMessage());
+            }
         }
     }
 
@@ -84,7 +95,7 @@ public class ShopDataProvider {
     // process the YAML data
     private static void cleanAndProcessData(Map<String, Object> data, String shopId) {
         try {
-            // Shop-Daten abrufen
+            // Get Shop Data
             String shopType = (String) data.getOrDefault("type", "UNKNOWN");
             String shopName = cleanString(getNestedString(data, "entity", "name"));
             String shopProfession = getNestedString(data, "entity", "profession");
@@ -92,16 +103,16 @@ public class ShopDataProvider {
             double x = getNestedDouble(data, "location", "x");
             double y = getNestedDouble(data, "location", "y");
             double z = getNestedDouble(data, "location", "z");
-            String owner = shopType.equals("ADMIN") ? "ADMIN" : (String) data.getOrDefault("ownerName", "UNBEKANNT");
-            String ownerUUID = shopType.equals("ADMIN") ? "ADMIN" : (String) data.getOrDefault("ownerUUID", "UNBEKANNT");
+            String owner = shopType.equals("ADMIN") ? "ADMIN" : (String) data.getOrDefault("ownerName", "UNKNOWN");
+            String ownerUUID = shopType.equals("ADMIN") ? "ADMIN" : (String) data.getOrDefault("ownerUUID", "UNKNOWN");
             boolean requirePermission = (boolean) data.getOrDefault("require_permission", false);
 
-            // Fehlende oder leere Werte durch Standardwerte ersetzen
-            shopName = shopName.isEmpty() ? "Unbenannter Shop" : shopName;
+            // Missing data handle
+            shopName = shopName.isEmpty() ? "Unnamed Shop" : shopName;
             shopProfession = shopProfession.isEmpty() ? "NONE" : shopProfession;
             world = world.isEmpty() ? "UNKNOWN" : world;
 
-            // Shop-Informationen in das JSON-Datenobjekt speichern
+            // Add Shop Data
             data.put("shopId", shopId);
             data.put("shopType", shopType);
             data.put("shopName", shopName);
@@ -111,12 +122,14 @@ public class ShopDataProvider {
             data.put("ownerUUID", ownerUUID);
             data.put("requirePermission", requirePermission);
 
-            // Artikel verarbeiten
+            // Process Items and Storage
             List<Map<String, Object>> processedItems = processItemsAndStorage(data, shopId);
             data.put("Items", processedItems);
 
         } catch (Exception e) {
-            Bukkit.getLogger().severe("Error while processing data: " + e.getMessage());
+            if (debugMode) {
+                plugin.getLogger().info("Error while processing " + shopId + ": " + e.getMessage());
+            }
         }
     }
 
@@ -135,20 +148,20 @@ public class ShopDataProvider {
         double pricePerItem = (double) item.get("pricePerItem");
         String itemUUID = (String) item.get("itemuuid");
 
-        // Unique Key for each item
-        String itemKey = itemType + meta.toString();
+        // Eindeutiger Schlüssel basierend auf Item-Typ und Metadaten
+        String itemKey = itemType + (meta != null ? meta.toString() : "");
 
-        // If the item is not in the map or the price is lower
+        // Wenn das Item noch nicht existiert oder der Preis besser ist, aktualisieren
         if (!bestPriceItems.containsKey(itemKey) || pricePerItem < (double) bestPriceItems.get(itemKey).get("pricePerItem")) {
             Map<String, Object> bestItem = new HashMap<>();
             bestItem.put("itemuuid", itemUUID);
             bestItem.put("type", itemType);
-            bestItem.put("meta", meta);
             bestItem.put("pricePerItem", pricePerItem);
 
             bestPriceItems.put(itemKey, bestItem);
         }
     }
+
 
 
     // get nested String
@@ -207,7 +220,9 @@ public class ShopDataProvider {
         try {
             return value.replaceAll("§.", "");
         } catch (Exception e) {
-            Bukkit.getLogger().severe("Error while cleaning string: " + e.getMessage());
+            if (debugMode) {
+                plugin.getLogger().info("Error while cleaning string: " + e.getMessage());
+            }
             return value;
         }
     }
@@ -215,10 +230,14 @@ public class ShopDataProvider {
     // generate UUID
     private static String createUUID(String item, String shopid) {
         try {
-            Bukkit.getLogger().severe("Creating UUID for item " + item + " in Shop " + shopid);
+            if (debugMode) {
+                plugin.getLogger().info("Creating UUID for " + item + " in " + shopid);
+            }
             return UUID.randomUUID().toString();
         } catch (Exception e) {
-            Bukkit.getLogger().severe("Error while creating UUID: " + e.getMessage());
+            if (debugMode) {
+                plugin.getLogger().info("Error while creating UUID: " + e.getMessage());
+            }
             return null;
         }
     }
@@ -234,6 +253,7 @@ public class ShopDataProvider {
         return hiddenShops;
     }
 
+    // process Items and Storage
     private static List<Map<String, Object>> processItemsAndStorage(Map<String, Object> yamlData, String shopId) {
         List<Map<String, Object>> processedItems = new ArrayList<>();
         List<Map<String, Object>> storage = extractStorage(yamlData);
@@ -249,62 +269,102 @@ public class ShopDataProvider {
             for (Map.Entry<String, Object> entry : itemsForSale.entrySet()) {
                 Map<String, Object> itemData = (Map<String, Object>) entry.getValue();
                 Map<String, Object> itemDetails = extractItemDetails(itemData, shopId);
-                String itemKey = generateItemKey(itemDetails);
 
+                // Stock check
+                String itemKey = generateItemKey(itemDetails);
                 int stock = storageMap.containsKey(itemKey) ? (int) storageMap.get(itemKey).get("amount") : 0;
                 itemDetails.put("stock", stock);
 
+                // Best Price check
                 checkAndUpdateBestPrice(itemDetails);
-                processedItems.add(itemDetails);
+
+                // Final Item Data
+                Map<String, Object> finalItemData = new HashMap<>();
+                finalItemData.put("itemuuid", UUID.randomUUID().toString());
+                finalItemData.put("type", itemDetails.get("type"));
+                finalItemData.put("mode", itemDetails.get("mode"));
+                finalItemData.put("amount", itemDetails.get("amount"));
+                finalItemData.put("price", itemDetails.get("price"));
+                double price = itemDetails.containsKey("price") ? (double) itemDetails.get("price") : 0.0;
+                int amount = itemDetails.containsKey("amount") ? (int) itemDetails.get("amount") : 1;
+                double pricePerItem = (amount > 0) ? price / amount : price;
+                itemDetails.put("pricePerItem", pricePerItem);
+
+                finalItemData.put("stock", itemDetails.get("stock"));
+
+                processedItems.add(finalItemData);
             }
         }
         return processedItems;
     }
 
+
+    // extract storage
     private static List<Map<String, Object>> extractStorage(Map<String, Object> yamlData) {
         List<Map<String, Object>> storageList = new ArrayList<>();
         List<Map<String, Object>> storage = (List<Map<String, Object>>) yamlData.get("storage");
 
         if (storage != null) {
-            for (Map<String, Object> item : storage) {
-                storageList.add(extractItemMeta(item));
+            for (Map<String, Object> itemData : storage) {
+                ItemStack itemStack = ItemStack.deserialize(itemData);
+
+                // Extracted Item
+                Map<String, Object> extractedItem = new HashMap<>();
+                extractedItem.put("type", itemStack.getType().toString());
+                extractedItem.put("amount", itemStack.getAmount());
+
+                extractedItem.putAll(extractItemMeta(itemStack));
+
+                storageList.add(extractedItem);
             }
         }
         return storageList;
     }
 
+    // extract item details
     private static Map<String, Object> extractItemDetails(Map<String, Object> itemData, String shopId) {
         Map<String, Object> extractedItem = new HashMap<>();
         Map<String, Object> item = (Map<String, Object>) itemData.get("item");
 
-        extractedItem.put("itemuuid", createUUID(item.getOrDefault("type", "UNKNOWN").toString(), shopId));
-        extractedItem.put("type", item.getOrDefault("type", "UNKNOWN"));
-        extractedItem.put("mode", itemData.getOrDefault("mode", "UNKNOWN"));
-        extractedItem.put("amount", itemData.getOrDefault("amount", 1));
+        ItemStack itemStack = ItemStack.deserialize(item);
 
+        // Extracted Item
+        extractedItem.put("itemuuid", createUUID(itemStack.getType().toString(), shopId));
+        extractedItem.put("type", itemStack.getType().toString());
+        extractedItem.put("mode", itemData.getOrDefault("mode", "UNKNOWN"));
+        extractedItem.put("amount", itemStack.getAmount());
+
+        // Get Price and Price Per Item
         double price = itemData.get("price") instanceof Number ? ((Number) itemData.get("price")).doubleValue() : 0.0;
         extractedItem.put("price", price);
-        extractedItem.put("pricePerItem", price / Math.max(1, (int) extractedItem.get("amount")));
+        extractedItem.put("pricePerItem", price / Math.max(1, itemStack.getAmount()));
 
-        extractedItem.putAll(extractItemMeta(item));
+
+        extractedItem.putAll(extractItemMeta(itemStack));
+
         return extractedItem;
     }
 
 
-    private static Map<String, Object> extractItemMeta(Map<String, Object> item) {
+    // extract item meta
+    private static Map<String, Object> extractItemMeta(ItemStack itemStack) {
         Map<String, Object> metaData = new HashMap<>();
 
-        if (item.containsKey("meta")) {
-            Map<String, Object> meta = (Map<String, Object>) item.get("meta");
+        if (itemStack.hasItemMeta()) {
+            ItemMeta meta = itemStack.getItemMeta();
 
-            metaData.put("display-name", meta.getOrDefault("display-name", ""));
-            metaData.put("enchants", meta.getOrDefault("enchants", Collections.emptyMap()));
-            metaData.put("trim", meta.getOrDefault("trim", null));
-        } else {
-            metaData.put("display-name", "");
-            metaData.put("enchants", Collections.emptyMap());
-            metaData.put("trim", null);
+            // Extracted Meta
+            metaData.put("lore", meta.hasLore() ? meta.getLore() : Collections.emptyList());
+            metaData.put("display-name", meta.hasDisplayName() ? meta.getDisplayName() : "");
+            metaData.put("enchants", meta.hasEnchants() ? meta.getEnchants() : Collections.emptyMap());
+
+            if (meta instanceof ArmorMeta) {
+                metaData.put("trim", ((ArmorMeta) meta).getTrim());
+            } else {
+                metaData.put("trim", null);
+            }
         }
+
         return metaData;
     }
 
@@ -328,13 +388,17 @@ public class ShopDataProvider {
             outputFile.getParentFile().mkdirs();
 
             try (FileWriter writer = new FileWriter(outputFile)) {
-                Bukkit.getLogger().severe("Writing to JSON file: " + outputPath);
+                if (debugMode) {
+                    plugin.getLogger().info("Writing to JSON file: " + outputFile.getAbsolutePath());
+                }
                 ObjectMapper objectMapper = new ObjectMapper();
                 String jsonString = objectMapper.writeValueAsString(dataList);
                 writer.write(jsonString);
             }
         } catch (IOException e) {
-            Bukkit.getLogger().severe("Error while writing to JSON file: " + e.getMessage());
+            if (debugMode) {
+                plugin.getLogger().info("Error while writing to JSON file: " + e.getMessage());
+            }
         }
     }
 }
