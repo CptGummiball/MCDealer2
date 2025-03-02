@@ -30,7 +30,7 @@ public class ApiHandler extends HttpServlet {
                 reader.close();
 
                 resp.setStatus(HttpServletResponse.SC_OK);
-                resp.getWriter().println(jsonContent.toString());
+                resp.getWriter().println(jsonContent);
             } else {
                 resp.setStatus(HttpServletResponse.SC_NOT_FOUND);
                 resp.getWriter().println("{\"message\": \"Data file not found!\"}");

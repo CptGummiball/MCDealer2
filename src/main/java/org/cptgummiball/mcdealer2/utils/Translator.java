@@ -10,10 +10,8 @@ import java.util.Map;
 public class Translator {
     private final Map<String, String> translations = new HashMap<>();
     private final String langFileName;
-    private final JavaPlugin plugin;
 
     public Translator(JavaPlugin plugin, String langFileName) {
-        this.plugin = plugin;
         this.langFileName = langFileName;
         loadTranslations(plugin);
     }

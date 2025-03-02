@@ -17,7 +17,7 @@ public class SchedulerTask {
         new BukkitRunnable() {
             @Override
             public void run() {
-                ShopDataProvider.generateOutputJson();
+                ShopDataProvider.process();
             }
         }.runTaskTimer(plugin, 0, interval * 20L);
     }
