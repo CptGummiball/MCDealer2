@@ -24,12 +24,14 @@ After installation, you can adjust the web server settings via the `config.yml`:
 ```yaml
 # MCDealer 2 Config
 language: en-US #en-US or de-DE (ONLY INTERNAL LANGUAGE)
+data:
+  interval: 10m #(s = seconds, m = minute, h = hour)
 web:
-  port: 8080
+  port: 8089
   use-internal-website: true
-
+debug-mode: true
 # Don't change anything below!
-config-version: 1
+config-version: 3
 ````
 ## Web Server
 - The internal web server is optional and displays the shops directly in a browser. By setting `use-internal-website` to `true`, the website will be served on the `port` specified in `config.yml`.
